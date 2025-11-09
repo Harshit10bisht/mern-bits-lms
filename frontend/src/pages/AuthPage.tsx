@@ -60,11 +60,18 @@ const AuthPage = () => {
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <h1>{mode === "login" ? "Welcome back" : "Create an account"}</h1>
+          <p className="auth-subtitle">
+            {mode === "login"
+              ? "Access your dashboard to request and manage equipment."
+              : "Join the portal to borrow resources and stay organized."}
+          </p>
           {mode === "register" && (
-            <label>
-              Full name
+            <label className="auth-field" htmlFor="fullName">
+              <span>Full name</span>
               <input
+                id="fullName"
                 required
+                className="auth-input"
                 value={formState.fullName}
                 onChange={(event) =>
                   setFormState((prev) => ({ ...prev, fullName: event.target.value }))
@@ -72,23 +79,27 @@ const AuthPage = () => {
               />
             </label>
           )}
-          <label>
-            Email
+          <label className="auth-field" htmlFor="email">
+            <span>Email</span>
             <input
+              id="email"
               type="email"
               required
+              className="auth-input"
               value={formState.email}
               onChange={(event) =>
                 setFormState((prev) => ({ ...prev, email: event.target.value }))
               }
             />
           </label>
-          <label>
-            Password
+          <label className="auth-field" htmlFor="password">
+            <span>Password</span>
             <input
+              id="password"
               type="password"
               required
               minLength={6}
+              className="auth-input"
               value={formState.password}
               onChange={(event) =>
                 setFormState((prev) => ({ ...prev, password: event.target.value }))
@@ -96,9 +107,11 @@ const AuthPage = () => {
             />
           </label>
           {mode === "register" && (
-            <label>
-              Role
+            <label className="auth-field" htmlFor="role">
+              <span>Role</span>
               <select
+                id="role"
+                className="auth-input"
                 value={formState.role}
                 onChange={(event) =>
                   setFormState((prev) => ({ ...prev, role: event.target.value }))
@@ -117,13 +130,23 @@ const AuthPage = () => {
       </div>
       <div className="auth-aside">
         <h2>School Equipment Lending Portal</h2>
-        <p>
-          Borrow equipment with confidence, track approvals, and keep school resources organized.
+        <p className="auth-aside__lead">
+          Streamline checkouts, keep departments aligned, and give every borrower a clear path from
+          request to return.
         </p>
         <ul>
-          <li>Browse available inventory in real-time</li>
-          <li>Submit and track borrowing requests</li>
-          <li>Manage approvals and returns with ease</li>
+          <li>
+            <strong>Live availability</strong>
+            Check inventory status the moment you log in so nothing slips through the cracks.
+          </li>
+          <li>
+            <strong>Guided approvals</strong>
+            Route requests to the right staff in seconds and keep decisions transparent.
+          </li>
+          <li>
+            <strong>Return reminders</strong>
+            Automate follow-ups and stay on top of due dates without extra spreadsheets.
+          </li>
         </ul>
       </div>
     </div>

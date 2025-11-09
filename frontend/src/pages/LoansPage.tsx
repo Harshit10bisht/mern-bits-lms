@@ -23,6 +23,8 @@ const LoansPage = () => {
   const { data: loans = [], isLoading } = useQuery({
     queryKey: ["loans", filters],
     queryFn: () => listLoans(filters),
+    refetchInterval: 2000,
+    refetchIntervalInBackground: true,
   });
 
   const refresh = () => {
@@ -184,6 +186,11 @@ const LoanRow = ({
   const canManage = isManager;
   const canReturn = isManager || loan.borrower.id === currentUserId;
 
+  const showDecisionActions = canManage && loan.status === "pending";
+  const showIssueAction = canManage && loan.status === "approved";
+  const showReturnAction = canReturn && ["approved", "issued"].includes(loan.status);
+  const hasNoActions = !showDecisionActions && !showIssueAction && !showReturnAction;
+
   return (
     <tr>
       <td>
@@ -207,46 +214,49 @@ const LoanRow = ({
       <td>{requestedDates}</td>
       <td className="muted-text">{loan.requestReason ?? "—"}</td>
       <td className="table-actions">
-        {canManage && loan.status === "pending" && (
-          <>
+        <div className="table-actions__group">
+          {showDecisionActions && (
+            <>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={onApprove}
+                disabled={busyAction === "approved" || busyAction === "reject"}
+              >
+                Approve
+              </button>
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={onReject}
+                disabled={busyAction === "approved" || busyAction === "reject"}
+              >
+                Reject
+              </button>
+            </>
+          )}
+          {showIssueAction && (
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={onIssue}
+              disabled={busyAction === "issued"}
+            >
+              Mark Issued
+            </button>
+          )}
+          {showReturnAction && (
             <button
               type="button"
               className="btn-secondary"
-              onClick={onApprove}
-              disabled={busyAction === "approved" || busyAction === "reject"}
+              onClick={onReturn}
+              disabled={busyAction === "returned"}
             >
-              Approve
+              Mark Returned
             </button>
-            <button
-              type="button"
-              className="btn-danger"
-              onClick={onReject}
-              disabled={busyAction === "approved" || busyAction === "reject"}
-            >
-              Reject
-            </button>
-          </>
-        )}
-        {canManage && loan.status === "approved" && (
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={onIssue}
-            disabled={busyAction === "issued"}
-          >
-            Mark Issued
-          </button>
-        )}
-        {canReturn && ["approved", "issued"].includes(loan.status) && (
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onReturn}
-            disabled={busyAction === "returned"}
-          >
-            Mark Returned
-          </button>
-        )}
+          )}
+          {hasNoActions && <span className="table-actions__empty">No actions</span>}
+        </div>
       </td>
     </tr>
   );

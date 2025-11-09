@@ -23,6 +23,8 @@ const AdminEquipmentPage = () => {
   const { data: equipment = [] } = useQuery({
     queryKey: ["equipment", {}],
     queryFn: () => listEquipment({}),
+    refetchInterval: 2000,
+    refetchIntervalInBackground: true,
   });
   const [form, setForm] = useState<EquipmentPayload>(initialForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -219,18 +221,20 @@ const AdminEquipmentPage = () => {
                     <td>
                       {item.availableQuantity} / {item.quantity}
                     </td>
-                    <td className="table-actions">
-                      <button type="button" className="btn-secondary" onClick={() => startEdit(item)}>
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-danger"
-                        onClick={() => deleteMutation.mutate(item._id)}
-                        disabled={deleteMutation.isPending}
-                      >
-                        Delete
-                      </button>
+                    <td className="table-actions table-actions--nowrap">
+                      <div className="table-actions__group">
+                        <button type="button" className="btn-secondary" onClick={() => startEdit(item)}>
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          onClick={() => deleteMutation.mutate(item._id)}
+                          disabled={deleteMutation.isPending}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -16,6 +16,8 @@ const DashboardPage = () => {
   const { data: equipment = [], isLoading } = useQuery({
     queryKey: ["equipment", filters],
     queryFn: () => listEquipment(filters),
+    refetchInterval: 2000,
+    refetchIntervalInBackground: true,
   });
 
   const requestMutation = useMutation({
@@ -143,7 +145,7 @@ const DashboardPage = () => {
       {selected && (
         <RequestPanel
           equipment={selected}
-          disabled={requestMutation.isLoading}
+          disabled={requestMutation.isPending}
           onClose={() => setSelected(null)}
           onSubmit={(payload) =>
             requestMutation.mutate({
